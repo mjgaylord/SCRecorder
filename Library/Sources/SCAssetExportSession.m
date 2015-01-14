@@ -284,6 +284,8 @@
 
     EnsureSuccess(error, completionHandler);
     
+    _writer.movieFragmentInterval = CMTimeMakeWithSeconds(1, 600);
+    
     _reader = [AVAssetReader assetReaderWithAsset:self.inputAsset error:&error];
     EnsureSuccess(error, completionHandler);
     
