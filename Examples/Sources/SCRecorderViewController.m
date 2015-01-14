@@ -34,6 +34,7 @@
 }
 
 @property (strong, nonatomic) SCRecorderFocusView *focusView;
+@property (nonatomic) UIDeviceOrientation currentOrientation;
 @end
 
 ////////////////////////////////////////////////////////////
@@ -71,7 +72,9 @@
     _recorder.maxRecordDuration = CMTimeMake(5, 1);
     
     _recorder.delegate = self;
-    _recorder.autoSetVideoOrientation = YES;
+    _recorder.autoSetVideoOrientation = NO;
+    _recorder.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+    _currentOrientation = UIDeviceOrientationLandscapeRight;
     
     UIView *previewView = self.previewView;
     _recorder.previewView = previewView;
@@ -103,6 +106,26 @@
         NSLog(@"=======================");
         [self prepareCamera];
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+}
+
+- (void) orientationDidChange:(NSNotification *) notification {
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (UIDeviceOrientationIsLandscape(orientation) && _currentOrientation != orientation) {
+        self.currentOrientation = orientation;
+        if (!_recorder.isRecording) {
+            [self updateRecorderOrientation];
+        }
+    }
+}
+
+- (void) updateRecorderOrientation {
+    if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
+        [_recorder setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+    } else if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
+        [_recorder setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+    }
 }
 
 - (void)recorder:(SCRecorder *)recorder didSkipVideoSampleBuffer:(SCRecordSession *)recordSession {
