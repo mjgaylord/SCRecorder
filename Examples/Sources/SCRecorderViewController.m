@@ -123,7 +123,7 @@
 - (void) updateRecorderOrientation {
     if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
         [_recorder setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
-    } else if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
+    } else if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft) {
         [_recorder setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
     }
 }
